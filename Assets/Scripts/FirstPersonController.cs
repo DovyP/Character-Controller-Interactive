@@ -46,11 +46,12 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleMovementInput()
     {
-        currentInput = new Vector2(walkSpeed * Input.GetAxis("Vertical"), walkSpeed * Input.GetAxis("Horizontal"));
-
+        currentInput = new Vector2(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal")).normalized;
+        //currentInput.Normalize(); test-delete l8r
         float moveDirectionY = moveDirection.y;
         moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);  // for orientation
         moveDirection.y = moveDirectionY;
+        //moveDirection.Normalize(); test-delete l8r
     }
 
     private void HandleMouseLock()
@@ -65,6 +66,6 @@ public class FirstPersonController : MonoBehaviour
     {
         if (!characterController.isGrounded)
             moveDirection.y -= gravity * Time.deltaTime;
-        characterController.Move(moveDirection * Time.deltaTime);
+        characterController.Move(moveDirection * walkSpeed * Time.deltaTime);
     }
 }
