@@ -5,9 +5,18 @@ using UnityEngine;
 public class FirstPersonController : MonoBehaviour
 {
     public bool CanMove { get; private set; } = true;
+    private bool isSprinting => canSprint && Input.GetKey(sprintKey);
+
+    [Header("Functional Options")]
+    [SerializeField] private bool canSprint = true;
+    [SerializeField] private bool canJump = true;
+
+    [Header("Controls")]
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Movement Parameters")]
     [SerializeField] private float walkSpeed = 3.0f;
+    [SerializeField] private float sprintSpeed = 6.0f;
     [SerializeField] private float gravity = 30.0f;
 
     [Header("Look Parameters")]
@@ -66,6 +75,6 @@ public class FirstPersonController : MonoBehaviour
     {
         if (!characterController.isGrounded)
             moveDirection.y -= gravity * Time.deltaTime;
-        characterController.Move(moveDirection * walkSpeed * Time.deltaTime);
+        characterController.Move(moveDirection * (isSprinting ? sprintSpeed : walkSpeed) * Time.deltaTime);
     }
 }
