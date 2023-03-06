@@ -447,7 +447,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1860370946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -498,7 +498,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1970078095}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -520,8 +520,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canSprint: 1
   canJump: 1
+  canCrouch: 1
   sprintKey: 304
   jumpKey: 32
+  crouchKey: 99
   walkSpeed: 3
   sprintSpeed: 6
   lookSpeedX: 2
@@ -530,3 +532,8 @@ MonoBehaviour:
   lowerLookLimit: 80
   jumpForce: 4
   gravity: 10
+  crouchHeight: 0.5
+  standingHeight: 2
+  timeToCrouch: 0.25
+  standingCenter: {x: 0, y: 0, z: 0}
+  crouchingCenter: {x: 0, y: 0.5, z: 0}
