@@ -17,6 +17,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private bool willSlideOnSlopes = true;
     [SerializeField] private bool canZoom = true;
     [SerializeField] private bool canInteract = true;
+    [SerializeField] private bool useFootsteps = true;
 
 
     [Header("Controls")]
@@ -73,6 +74,18 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float zoomFOV = 30f;
     private float defaultFOV;
     private Coroutine zoomRoutine;
+
+    [Header("Footstep Parameters")]
+    [SerializeField] private float baseStepSpeed = 0.5f;
+    [SerializeField] private float crouchStepMultiplier = 1.5f;
+    [SerializeField] private float sprintStepMultiplier = 0.6f;
+    [SerializeField] private AudioSource footstepAudioSource = default;
+    [SerializeField] private AudioClip[] concreteClips = default;
+    [SerializeField] private AudioClip[] grassClips = default;
+    [SerializeField] private AudioClip[] snowClips = default;
+    private float footstepTimer = 0;
+    private float getCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : isSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
+
 
     // SLIDING PARAMETERS
     private Vector3 hitPointNormal;
@@ -136,6 +149,9 @@ public class FirstPersonController : MonoBehaviour
 
             if (canZoom)
                 HandleZoom();
+
+            if (useFootsteps)
+                HandleFootsteps();
 
             if (canInteract)
             {
@@ -241,6 +257,39 @@ public class FirstPersonController : MonoBehaviour
         if(Input.GetKeyDown(interactKey) && currentInteractable != null && Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance, interactionLayer))
         {
             currentInteractable.OnInteract();
+        }
+    }
+
+    private void HandleFootsteps()
+    {
+        if (!characterController.isGrounded) return;
+
+        if (currentInput == Vector2.zero) return;
+
+        footstepTimer -= Time.deltaTime;
+
+        if(footstepTimer <= 0)
+        {
+            if(Physics.Raycast(playerCamera.transform.position, Vector3.down, out RaycastHit hit, 3))
+            {
+                switch (hit.collider.tag)
+                {
+                    case "Footsteps/CONCRETE":
+                        footstepAudioSource.PlayOneShot(concreteClips[Random.Range(0, concreteClips.Length - 1)]);
+                        break;
+                    case "Footsteps/GRASS":
+                        footstepAudioSource.PlayOneShot(grassClips[Random.Range(0, grassClips.Length - 1)]);
+                        break;
+                    case "Footsteps/SNOW":
+                        footstepAudioSource.PlayOneShot(snowClips[Random.Range(0, snowClips.Length - 1)]);
+                        break;
+                    default:
+                        footstepAudioSource.PlayOneShot(concreteClips[Random.Range(0, concreteClips.Length - 1)]);
+                        break;
+                }
+            }
+
+            footstepTimer = getCurrentOffset;
         }
     }
 
